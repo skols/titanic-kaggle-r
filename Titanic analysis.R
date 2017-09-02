@@ -31,7 +31,7 @@ ggplot(titanic, aes(Age)) +
 # Several values under 1, which are children under the age of 1
 
 # Correlation matrix that doesn't work
-# qplot(x=Var1, y=Var2, data=melt(cor(titanic)), fill=value, geom="tile") + 
+# qplot(x=Var1, y=Var2, data=melt(cor(titanic)), fill=value, geom="tile") +
 #   scale_fill_gradient2(limits=c(-1, 1))
 
 # Density plot
@@ -73,7 +73,7 @@ full_data$Fsize <- full_data$SibSp + full_data$Parch + 1
 full_data$Family <- paste(full_data$Surname, full_data$Fsize, sep="_")
 
 # Plot a relationship between family size and survival with ggplot2
-ggplot(full_data[1:891, ], aes(x=Fsize, fill=factor(Survived))) + 
+ggplot(full_data[1:891, ], aes(x=Fsize, fill=factor(Survived))) +
   geom_bar(stat="count", position="dodge") +
   scale_x_continuous(breaks=c(1:11)) +
   labs(x="Family Size") +
@@ -90,8 +90,8 @@ mosaicplot(table(full_data$FsizeD, full_data$Survived),
            shade=TRUE)
 
 # Look at values in the passenger cabin
-full_data %>% 
-  select(Cabin) %>% 
+full_data %>%
+  select(Cabin) %>%
   group_by(Cabin) # a lot of missing values
 
 # Create a Deck variable, which is the first character of the Cabin
@@ -99,32 +99,6 @@ full_data$Deck <- factor(sapply(full_data$Cabin,
                                 function (x) strsplit(x, NULL)[[1]][1]))
 
 # Possibly more could be done, like looking into cabins with multiple rooms
-
-# Analyze by pivoting features
-# Pclass
-titanic %>% 
-  select(Pclass, Survived) %>% 
-  group_by(Pclass) %>% 
-  summarize(avg = mean(Survived))
-
-# Sex
-titanic %>% 
-  select(Sex, Survived) %>% 
-  group_by(Sex) %>% 
-  summarize(avg = mean(Survived))
-
-# SibSp
-titanic %>% 
-  select(SibSp, Survived) %>% 
-  group_by(SibSp) %>% 
-  summarize(avg = mean(Survived))
-
-# Parch
-titanic %>% 
-  select(Parch, Survived) %>% 
-  group_by(Parch) %>% 
-  summarize(avg = mean(Survived))
-
 
 # MISSINGNESS
 # Passengers 62 and 830 are missing Embarkment
@@ -136,7 +110,7 @@ full_data[c(62, 830), "Embarked"]
 full_data[c(62, 830), ]
 
 # Get rid of missing passenger IDs
-embark_fare <- full_data %>% 
+embark_fare <- full_data %>%
   filter(PassengerId != 62 & PassengerId != 830)
 
 # Use ggplot2 to visualize embarkment, passenger class, and median fare
@@ -157,7 +131,7 @@ full_data[1044, ]
 
 # This is a third class passenger who departed from Southampton (‘S’). Let’s visualize
 # Fares among all others sharing their class and embarkment (n = 494).
-ggplot(full_data[full_data$Pclass == "3" & full_data$Embarked=="S", ], 
+ggplot(full_data[full_data$Pclass == "3" & full_data$Embarked=="S", ],
        aes(x = Fare)) +
   geom_density(fill="#99d6ff", alpha=0.4) +
   geom_vline(aes(xintercept=median(Fare, na.rm=T)), color="red", linetype="dashed",
@@ -212,7 +186,7 @@ sum(is.na(full_data$Age))
 # a passenger who is 1) female, 2) is over 18, 3) has more than 0 children (no kidding!),
 # and 4) does not have the title ‘Miss’.
 # First we'll look at the relationship between age and survival
-ggplot(full_data[1:891, ], aes(Age, fill=factor(Survived))) + 
+ggplot(full_data[1:891, ], aes(Age, fill=factor(Survived))) +
   geom_histogram() +
   # Including sex since we know (a priori) it's a significant predictor
   facet_grid(. ~ Sex) +
@@ -267,7 +241,7 @@ varImportance <- data.frame(Variables=row.names(importance),
                             Importance=round(importance[, "MeanDecreaseGini"], 2))
 
 # Create a rank variable based on importance
-rankImportance <- varImportance %>% 
+rankImportance <- varImportance %>%
   mutate(Rank = paste0("#", dense_rank(desc(Importance))))
 
 # Use ggplot2 to visualize relative importance of variables
